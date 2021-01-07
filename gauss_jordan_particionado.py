@@ -142,3 +142,4 @@ class PartitionedGaussJordan:
         self.matrix.print_matrix()
         print("Y el vector solucion como")
         self.vector.print_vector()
+        print("\n" * 3, end="")

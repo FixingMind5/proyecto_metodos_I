@@ -10,6 +10,7 @@ if __name__ == "__main__":
     print("0. Salir")
 
     while True:
+        print("Para volver a ver el menú escriba 6")
         option = int(input("Eliga una opcion: "))
         
         if option < 0 or option > 1:
@@ -18,8 +19,7 @@ if __name__ == "__main__":
         if option == 0:
             print("Bye ;)")
             break
-        
-        if option == 1:
+        elif option == 1:
             vector = Vector([])
             matrix = Matrix([])
             print("Comienza la creacion de la matriz")
@@ -28,5 +28,9 @@ if __name__ == "__main__":
             vector.create_vector()
             partitioned_gauss_jordan = PartitionedGaussJordan(matrix.matrix, vector.vector, matrix_name="A", vector_name="b")
             partitioned_gauss_jordan.solve()
-
+        elif option == 6:
+            print("\n" * 3)
+            print("1. metodo de gauss jordan particionado")
+            print("0. Salir")
+            print("\n" * 3)
     
