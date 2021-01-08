@@ -1,5 +1,6 @@
 """Matrix module"""
 from vector import Vector
+import copy
 
 class Matrix:
     """Class Matrix
@@ -11,6 +12,7 @@ class Matrix:
     inverse_matrix = []
     name = ""
     inverse_matrix_name = ""
+    det = 0
 
     def __init__(self, matrix, name=""):
         """Init for a matrix gived
@@ -69,12 +71,16 @@ class Matrix:
         if len(self.matrix[0]) != len(self.matrix):
             raise ValueError("La matriz debe de ser cuadrada")
 
-    def print_matrix(self, inverse=False):
+    def print_matrix(self, matrix=None, inverse=False):
         """Prints the element of a matrix
         
         @param param name: A string with the matrix name
         """
-        matrix = self.matrix if not inverse else self.inverse_matrix
+        matrix = self.matrix if not matrix else matrix
+
+        if inverse:
+            matrix = self.inverse_matrix
+
         name = self.name if not inverse else self.inverse_matrix_name
 
         print(f"Matriz {name}")
@@ -183,3 +189,74 @@ class Matrix:
         temp_matrix.remove([])
         
         return Matrix(temp_matrix)
+    
+    def get_determinant(self, matrix=None):
+        """Obtains the determinant of a given matrix
+        
+        @param matrix: an array of arrays [[]]
+        """
+        (sign, det) = (-1, 0)
+        temp_matrix = [[]]
+
+        if not matrix:
+            matrix = copy.deepcopy(self.matrix)
+
+        if len(matrix) == 2 and len(matrix[0]) == 2:
+            return (matrix[0][0] * matrix[1][1]) - (matrix[0][1] * matrix[1][0])
+        
+        if len(matrix) == 1 and len(matrix[0]) == 1:
+            return matrix[0][0]
+
+        for element in matrix[0]:
+            sign *= -1
+            temp_matrix = copy.deepcopy(matrix)
+            index_of_element = matrix[0].index(element)
+            for index in range(len(matrix)):
+                temp_matrix[index].remove(temp_matrix[index][index_of_element])
+            temp_matrix.remove(temp_matrix[0])
+            det += (sign * element) * self.get_determinant(temp_matrix)
+
+        return det
+
+    def solve_matrix(self, matrix, vector):
+        """Solve a equation system with cramer method
+
+        @param matrix: (Optional) must be an array of arrays [[]]
+        if matrix is self, do matrix=None
+        @param vector: must be a list
+        @raise ValueError if determinant equals to 0
+        @returns a Vector Object with the value of the variables
+        """
+        local_matrix = matrix if matrix else copy.deepcopy(self.matrix)
+        solution_vector = []
+        temp_det = 0.0
+        
+        det_A = self.get_determinant()
+        if det_A == 0:
+            raise ZeroDivisionError((
+                "El determinante de la matriz es igual a cero "
+                "lo cual dará un error de división por cero."
+            ))
+        
+        for i in range(len(local_matrix)):
+            temp_matrix = copy.deepcopy(local_matrix)
+            for j in range(len(local_matrix[i])):
+                temp_matrix[j][i] = vector[j]
+            else:
+                temp_det = Matrix(temp_matrix).get_determinant()
+                solution_vector.append(temp_det / det_A)
+
+        return Vector(solution_vector, name=f" solucion de la matriz {self.name}")
+    
+    def comprobation(self, solution_vector):
+        """Prints the comprobation of the vector solution
+        with the original matrix
+
+        @param solution_vector: an array with the values
+        """
+        comprobation = 0.0
+
+        for i in range(len(solution_vector)):
+            comprobation += self.matrix[0][i] * solution_vector[i]
+
+        print(f"Comprobación: {comprobation}")

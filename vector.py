@@ -74,11 +74,15 @@ class Vector:
 
         return Vector(temp_vector)
 
-    def print_vector(self):
-        """Prints the elements of the Vector"""
+    def print_vector(self, vector=None):
+        """Prints the elements of the Vector or of a given vector
+        
+        @param vector: an array
+        """
+        local_vector = self.vector if not vector else vector
         print(f"Vector {self.name}:", end=" ")
         print("|", end=" ")
-        for element in self.vector:
+        for element in local_vector:
             print(f"{element}", end=" ")
 
         print("|")

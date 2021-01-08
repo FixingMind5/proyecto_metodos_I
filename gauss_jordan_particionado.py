@@ -1,6 +1,7 @@
 """Partitioned Gauss-Jordan method"""
 from matrix import Matrix
 from vector import Vector
+import copy
 
 class PartitionedGaussJordan:
     """Partitioned Gauss Jordan method
@@ -30,7 +31,8 @@ class PartitionedGaussJordan:
         """
 
         # Begins parititons
-        matrix = self.matrix.matrix
+        matrix = copy.deepcopy(self.matrix.matrix)
+        vector = copy.deepcopy(self.vector.vector)
         print("Comienza las particiones")
         a_11 = Matrix([
             [matrix[0][0], matrix[0][1]], 
@@ -55,16 +57,16 @@ class PartitionedGaussJordan:
 
         # Obteniendo los vectores
         print(f"Obteniendo las particiones del vector {self.vector.name}")
-        b_1 = Vector([self.vector.vector[0], self.vector.vector[1]], name="b_1")
-        b_2 = Vector([self.vector.vector[2], self.vector.vector[3]], name="b_2")
+        b_1 = Vector([vector[0], vector[1]], name="b_1")
+        b_2 = Vector([vector[2], vector[3]], name="b_2")
         b_1.print_vector()
         b_2.print_vector()
 
         # Empieza las sustituciones con matrices de identidad
         print("Sustituyendo a_11 con la matriz identidad de 2x2")
-        (self.matrix.matrix[0][0], self.matrix.matrix[0][1], self.matrix.matrix[1][0], self.matrix.matrix[1][1]) = (1.0, 0.0, 0.0, 1.0)
+        (matrix[0][0], matrix[0][1], matrix[1][0], matrix[1][1]) = (1.0, 0.0, 0.0, 1.0)
         print("Así va quedando la matriz")
-        self.matrix.print_matrix()
+        self.matrix.print_matrix(matrix=matrix)
 
         # Hallando la matriz inversa de a_11
         print("Hallando a_11 prima")
@@ -85,14 +87,14 @@ class PartitionedGaussJordan:
 
         # Substituyendo los valores de la partitcion a_12 con los de la particion a_12_prima
         print("Substituyendo los valores de a_12 con los de a_12_prima")
-        (self.matrix.matrix[0][2], self.matrix.matrix[0][3], self.matrix.matrix[1][2], self.matrix.matrix[1][3]) = (a_12_prime.matrix[0][0], a_12_prime.matrix[0][1], a_12_prime.matrix[1][0], a_12_prime.matrix[1][1])
-        self.matrix.print_matrix()
+        (matrix[0][2], matrix[0][3], matrix[1][2], matrix[1][3]) = (a_12_prime.matrix[0][0], a_12_prime.matrix[0][1], a_12_prime.matrix[1][0], a_12_prime.matrix[1][1])
+        self.matrix.print_matrix(matrix=matrix)
 
         # Subsituyendo los valores de la particion b_1 del vector solucion
         # con los valores de b_1 prima
-        (self.vector.vector[0], self.vector.vector[1]) = (b_1_prime.vector[0], b_1_prime.vector[1])
+        (vector[0], vector[1]) = (b_1_prime.vector[0], b_1_prime.vector[1])
         print("Vector solucion")
-        self.vector.print_vector()
+        self.vector.print_vector(vector=vector)
 
         print("Obteniendo a_22 prima")
         a_22_prime = a_22.minus_matrix(a_21.multiply_matrix(a_12_prime.matrix).matrix)
@@ -104,14 +106,14 @@ class PartitionedGaussJordan:
 
         # intercambiando las particiones
         print("Intercambiando la particion a_21 con una matriz de ceros")
-        (self.matrix.matrix[2][0], self.matrix.matrix[2][1], self.matrix.matrix[3][0], self.matrix.matrix[3][1]) = (0, 0, 0, 0)
+        (matrix[2][0], matrix[2][1], matrix[3][0], matrix[3][1]) = (0, 0, 0, 0)
         print("Intercambiando la particion a_22 con a_22 prima")
-        (self.matrix.matrix[2][2], self.matrix.matrix[2][3], self.matrix.matrix[3][2], self.matrix.matrix[3][3]) = (a_22_prime.matrix[0][0], a_22_prime.matrix[0][1], a_22_prime.matrix[1][0], a_22_prime.matrix[1][1])
-        (self.vector.vector[2], self.vector.vector[3]) = (b_2_prime.vector[0], b_2_prime.vector[1])
+        (matrix[2][2], matrix[2][3], matrix[3][2], matrix[3][3]) = (a_22_prime.matrix[0][0], a_22_prime.matrix[0][1], a_22_prime.matrix[1][0], a_22_prime.matrix[1][1])
+        (vector[2], vector[3]) = (b_2_prime.vector[0], b_2_prime.vector[1])
         print("Así queda la matriz")
-        self.matrix.print_matrix()
+        self.matrix.print_matrix(matrix=matrix)
         print("Asi queda el vector solucion")
-        self.vector.print_vector()
+        self.vector.print_vector(vector=vector)
 
         # Obteniendo la prima de a_22 y c_2
         print("Obteniendo la particion a_22")
@@ -123,12 +125,12 @@ class PartitionedGaussJordan:
 
         # Intercambiando las particiones
         print("Intercambiando las particiones")
-        (self.matrix.matrix[2][2], self.matrix.matrix[2][3], self.matrix.matrix[3][2], self.matrix.matrix[3][3]) = (1.0, 0.0, 0.0, 1.0)
-        (self.vector.vector[2], self.vector.vector[3]) = (c_2.vector[0], c_2.vector[1])
+        (matrix[2][2], matrix[2][3], matrix[3][2], matrix[3][3]) = (1.0, 0.0, 0.0, 1.0)
+        (vector[2], vector[3]) = (c_2.vector[0], c_2.vector[1])
         print("Nuestra matriz principal:")
-        self.matrix.print_matrix()
+        self.matrix.print_matrix(matrix=matrix)
         print("Nuestro vector solucion")
-        self.vector.print_vector()
+        self.vector.print_vector(vector=vector)
 
         # Encontrando la particion c_1
         print("Encontrando la particion c_1")
@@ -136,10 +138,12 @@ class PartitionedGaussJordan:
         c_1.print_vector()
 
         # Intercambiando las particiones
-        (self.matrix.matrix[0][2], self.matrix.matrix[0][3], self.matrix.matrix[1][2], self.matrix.matrix[1][3]) = (0.0, 0.0, 0.0, 0.0)
-        (self.vector.vector[0], self.vector.vector[1]) = (c_1.vector[0], c_1.vector[1])
+        (matrix[0][2], matrix[0][3], matrix[1][2], matrix[1][3]) = (0.0, 0.0, 0.0, 0.0)
+        (vector[0], vector[1]) = (c_1.vector[0], c_1.vector[1])
         print("Finalmente la matriz queda como")
-        self.matrix.print_matrix()
+        self.matrix.print_matrix(matrix=matrix)
         print("Y el vector solucion como")
-        self.vector.print_vector()
+        self.vector.print_vector(vector=vector)
         print("\n" * 3, end="")
+
+        self.matrix.comprobation(vector)
