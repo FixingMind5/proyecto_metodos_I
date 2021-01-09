@@ -1,7 +1,13 @@
+"""Main
+
+where all magic beguns
+"""
+
 from matrix import Matrix
 from vector import Vector
 from gauss_jordan_particionado import PartitionedGaussJordan
 from doolittle import Doolittle
+from secant_method import SecantMethod
 
 
 def create_expanded_matrix():
@@ -18,11 +24,47 @@ def create_expanded_matrix():
     return (matrix, vector)
 
 
+def prepare_find_root_method():
+    """create variables such as interval,
+    tolerance and decimal to round
+    
+    @returns a tuple with interval, tolerance and decimals to round
+    """
+    interval = []
+    tolerance = 0.0
+    decimals_to_round = 0
+    for i in range(2):
+        interval.append(int(input(f"{i + 1}º extremo del intervalo: ")))
+    while True:
+        try:
+            tolerance = int(input("Ingresa el valor de la tolerancia en negativo (e. g.) -5"))
+            break
+        except TypeError:
+            print("Tiene que ser un valor numérico")
+            continue
+    while True:
+        if str(input("¿Quieres redondear el valor?: [y / n]: ")) == "y":
+            try:
+                decimals_to_round = int(input((
+                    "Ingresa el valor de los decimales a redondear en positivo "
+                    "(e. g.) 5"
+                )))
+                break
+            except TypeError:
+                print("Asegúrate de colocar un valor numérico")
+                continue
+        else:
+            break
+    
+    return (interval, tolerance, decimals_to_round)
+    
+
 def print_menu():
     """Prints the menu"""
     print("\n" * 2, end="")
-    print("1. metodo de gauss jordan particionado")
-    print("3. factorización por método de Doolittle")
+    print("2. Encontrar una raiz por medio del metodo de la secante")
+    print("3. metodo de gauss jordan particionado")
+    print("5. factorización por método de Doolittle")
     print("0. Salir")
     print()
 
@@ -41,14 +83,25 @@ if __name__ == "__main__":
         if option == 0:
             print("Bye ;)")
             break
-        elif option == 1:
+        elif option == 2:
+            (interval, tolerance, decimal_to_round) = prepare_find_root_method()
+            secant = SecantMethod(
+                interval[0],
+                interval[1],
+                tolerance=tolerance,
+                decimal_to_round=decimal_to_round
+            )
+            print(f"Comienza el método para la función {secant.function_name}")
+            (axis_x, axis_y) = secant.tabulate(interval=interval)
+            secant.plot(axis_x, axis_y)
+            secant.solve()
+        elif option == 3:
             (matrix, vector) = create_expanded_matrix()
             partitioned_gauss_jordan = PartitionedGaussJordan(matrix.matrix, vector.vector, matrix_name="A", vector_name="b")
             partitioned_gauss_jordan.solve()
-        elif option == 3:
+        elif option == 5:
             (matrix, vector) = create_expanded_matrix()
             doolittle = Doolittle(matrix=matrix, matrix_name="A", vector=vector, vector_name="b")
             doolittle.solve()
-        elif option == 6:
-            print_menu()
+        elif option == 6: print_menu()
     
