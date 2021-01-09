@@ -49,7 +49,7 @@ def prepare_find_root_method():
                     "Ingresa el valor de los decimales a redondear en positivo "
                     "(e. g.) 5"
                 )))
-            break
+                break
             except TypeError:
                 print("Asegúrate de colocar un valor numérico")
                 continue
@@ -83,7 +83,7 @@ if __name__ == "__main__":
         if option == 0:
             print("Bye ;)")
             break
-        elif == 2:
+        elif option == 2:
             (interval, tolerance, decimal_to_round) = prepare_find_root_method()
             secant = SecantMethod(
                 interval[0],
