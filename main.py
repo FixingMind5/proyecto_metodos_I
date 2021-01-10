@@ -2,18 +2,21 @@
 
 where all magic beguns
 """
-
 from matrix import Matrix
 from vector import Vector
 from gauss_jordan_particionado import PartitionedGaussJordan
 from doolittle import Doolittle
 from secant_method import SecantMethod
 from newton_method import NewtonMethod
+from metodo_de_intercambio  import SwapMethod
 
 
 def create_expanded_matrix():
     """Creates matrix and vector needed in order to
     continue with the methods
+
+    @returns a tuple with a Matrix object and a Vector object
+    in that order: (Matrix, Vector)
     """
     vector = Vector([])
     matrix = Matrix([])
@@ -66,6 +69,7 @@ def print_menu():
     print("1. Encontrar una raiz por medio del metodo de Newton")
     print("2. Encontrar una raiz por medio del metodo de la secante")
     print("3. metodo de gauss jordan particionado")
+    print("4. Resolver una matriz por el método de intercambio")
     print("5. factorización por método de Doolittle")
     print("0. Salir")
     print()
@@ -113,6 +117,10 @@ if __name__ == "__main__":
             (matrix, vector) = create_expanded_matrix()
             partitioned_gauss_jordan = PartitionedGaussJordan(matrix.matrix, vector.vector, matrix_name="A", vector_name="b")
             partitioned_gauss_jordan.solve()
+        elif option == 4:
+            (matrix, vector) = create_expanded_matrix()
+            swap = SwapMethod(matrix, vector)
+            swap.solve()
         elif option == 5:
             (matrix, vector) = create_expanded_matrix()
             doolittle = Doolittle(matrix=matrix, matrix_name="A", vector=vector, vector_name="b")
