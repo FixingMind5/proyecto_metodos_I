@@ -11,6 +11,9 @@ from newton_method import NewtonMethod
 from metodo_de_intercambio  import SwapMethod
 
 
+FUNCTION_NAME = "f(x) = cos(x) - x"
+
+
 def create_expanded_matrix():
     """Creates matrix and vector needed in order to
     continue with the methods
@@ -91,6 +94,9 @@ if __name__ == "__main__":
             print("Bye ;)")
             break
         elif option == 1:
+            print((
+                f"Comienza el método de Newton para la función {FUNCTION_NAME}"
+            ))
             (interval, tolerance, decimal_to_round) = prepare_find_root_method()
             value = float(input("Ingresa el valor inicial (debe ser un número): "))
             newton = NewtonMethod(
@@ -101,7 +107,19 @@ if __name__ == "__main__":
             (axis_x, axis_y) = newton.tabulate(interval=interval)
             newton.plot(axis_x, axis_y)
             newton.solve()
+            print("\n")
+            print("Conclusión:")
+            print((
+                "Este método como el de la secante es muy exacto \n"
+                "como es de suponer, mientras más tolerancia le \n"
+                "permitas, más exacto es el valor de la raíz aunque \n"
+                "a veces el valor es tan pequeño que depende de la situación \n"
+                "puedes despreciar esa pequeña \"variación\""
+            ))
         elif option == 2:
+            print((
+                f"Comienza el método de Secante para la función {FUNCTION_NAME}"
+            ))
             (interval, tolerance, decimal_to_round) = prepare_find_root_method()
             secant = SecantMethod(
                 interval[0],
@@ -113,6 +131,16 @@ if __name__ == "__main__":
             (axis_x, axis_y) = secant.tabulate(interval=interval)
             secant.plot(axis_x, axis_y)
             secant.solve()
+            print("\n")
+            print("Conclusión")
+            print((
+                "Nuevamente, este método es tan eficiente que el de \n"
+                "Newton con respecto a la tolerancia, lo mismo, depende del \n"
+                "caso en el que se use puedes permitirte más tolerancia y el error \n"
+                "será más pequeño aunque en algunas funciones cabe destacar que a más \n"
+                "iteraciones, más probable es que se pierda la raíz así que hay que \n"
+                "tener cuidado en ese aspecto"
+            ))
         elif option == 3:
             (matrix, vector) = create_expanded_matrix()
             partitioned_gauss_jordan = PartitionedGaussJordan(matrix.matrix, vector.vector, matrix_name="A", vector_name="b")

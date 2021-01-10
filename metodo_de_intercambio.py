@@ -33,8 +33,8 @@ class SwapMethod:
         temp_value = 0.0
 
         for value in values:
-            if abs(value) > temp_value:
-                temp_value = abs(value)
+            if abs(value) > abs(temp_value):
+                temp_value = value
         
         return temp_value
 
@@ -42,10 +42,14 @@ class SwapMethod:
         """swap method
         
         follows the swap method to modify a matrix
-        @raise ValueError if matrix not squared
+        @raise ValueError if matrix not squared and if determinant is 0
         @returns a Matrix Object
         """
         print("Haz ingresado la matriz: ")
+        det = self.matrix.get_determinant()
+        print(f"El determinante de la matriz {self.matrix.name} es {det}")
+        if det == 0:
+            raise ValueError("la matriz no es invertible")
         self.matrix.print_matrix()
         matrix = deepcopy(self.matrix.matrix)
         (index_of_pivot, pivot) = (int, float)
@@ -80,7 +84,7 @@ class SwapMethod:
         @returns the value of the comprobation
         """
         result_matrix = self.swap()
-        print("Matriz resultante:")
+        result_matrix.set_name("resultante")
         result_matrix.print_matrix()
         sorted_matrix = result_matrix.sort_matrix(self.matrix)
         solution_vector = sorted_matrix.multiply_vector(self.vector)

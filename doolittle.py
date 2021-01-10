@@ -41,9 +41,9 @@ class Doolittle:
             temp_matrix.remove([])
             submatrix = Matrix(temp_matrix)
             print(f"Submatriz de {i + 1}x{i + 1}")
-            submatrix.print_matrix()
             det = submatrix.get_determinant()
             print(f"Determinante = {det}")
+            submatrix.print_matrix()
             if det == 0:
                 return False
         
@@ -102,7 +102,10 @@ class Doolittle:
     def solve(self):
         """Solve method
 
-        Starts to run Doolittle method"""
+        Starts to run Doolittle method
+        
+        @returns comprobation
+        """
         is_valid = self.verify_sub_matrixes()
         
         if not is_valid:
@@ -119,6 +122,7 @@ class Doolittle:
             matrix=None, vector=lower_solution_vector.vector)
         upper_solution_vector.print_vector()
 
-        self.matrix.comprobation(upper_solution_vector.vector)
+        comprobation = self.matrix.comprobation(upper_solution_vector.vector)
+        return comprobation
 
 

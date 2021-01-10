@@ -194,6 +194,7 @@ class Matrix:
         """Obtains the determinant of a given matrix
         
         @param matrix: an array of arrays [[]]
+        @return determinant
         """
         (sign, det) = (-1, 0)
         temp_matrix = [[]]
@@ -207,14 +208,13 @@ class Matrix:
         if len(matrix) == 1 and len(matrix[0]) == 1:
             return matrix[0][0]
 
-        for element in matrix[0]:
+        for i in range(len(matrix[0])):
             sign *= -1
             temp_matrix = copy.deepcopy(matrix)
-            index_of_element = matrix[0].index(element)
             for index in range(len(matrix)):
-                temp_matrix[index].remove(temp_matrix[index][index_of_element])
+                temp_matrix[index].pop(i)
             temp_matrix.remove(temp_matrix[0])
-            det += (sign * element) * self.get_determinant(temp_matrix)
+            det += (sign * matrix[0][i]) * self.get_determinant(temp_matrix)
 
         return det
 
@@ -343,8 +343,11 @@ class Matrix:
 
         print("matrix antes de ser ordenada")
         matrix.print_matrix()
-        result_matrix = matrix.multiply_matrix(original_matrix.matrix)
+        result_matrix = original_matrix.multiply_matrix(matrix.matrix)
         identity_matrix = self.create_identity_matrix()
+
+        print("Matriz que imprime al ser multiplicada (debe de ser la matriz identidad)")
+        result_matrix.print_matrix()
 
         if result_matrix.matrix == identity_matrix.matrix:
             return matrix
@@ -363,8 +366,13 @@ class Matrix:
         ordered_list = self.merge_sort(list_to_sort)
 
         matrix_sorted = []
+        identity_matrix_sorted = []
         for index, _ in ordered_list:
+            identity_matrix_sorted.append(result_matrix.matrix[index])
             matrix_sorted.append(matrix.matrix[index])
+
+        print("Matriz que imprime cuando se han ordenado correctamente")
+        Matrix(identity_matrix_sorted).print_matrix()
 
         matrix_sorted = Matrix(matrix_sorted)
         print("Esta es la matriz ordenada")
