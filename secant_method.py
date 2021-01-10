@@ -28,7 +28,7 @@ class SecantMethod(NumericMethod):
         iteration = 1
         (previous_n, n, next_n) = (self.x_0, self.x, 0.0)
         (f_previous_x, f_x, f_next_x) = (0.0, 0.0, 0.0)
-        error = 0.0
+        (error, converge) = (0.0, False)
         MAX_ITERATIONS = int(input("Número de iteraciones a realizar: "))
 
         if MAX_ITERATIONS <= 1:
@@ -56,6 +56,7 @@ class SecantMethod(NumericMethod):
             f_next_x = self.function(next_n)
 
             if f_next_x == 0:
+                converge = True
                 print(f"La raiz del intervalo es {next_n}")
                 break
 
@@ -67,8 +68,11 @@ class SecantMethod(NumericMethod):
 
             if error <= self.TOLERANCE and abs(f_next_x) <= self.TOLERANCE:
                 print(f"Una raiz aproximada de la ecuación es {next_n}")
+                converge = True
                 break
                 
             n = next_n
-
             iteration += 1
+
+        if not converge:
+            print("El método no converge a una raiz")

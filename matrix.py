@@ -128,7 +128,7 @@ class Matrix:
     def multiply_vector(self, vector, inverse=False):
         """Multiply a matrix times vector
 
-        @param param vector: a list
+        @param param vector: a vector object
         @returns a vector"""
         temp_vector = []
         matrix = self.inverse_matrix if inverse else self.matrix
@@ -253,6 +253,7 @@ class Matrix:
         with the original matrix
 
         @param solution_vector: an array with the values
+        @returns the value of the comprobation
         """
         comprobation = 0.0
 
@@ -260,3 +261,113 @@ class Matrix:
             comprobation += self.matrix[0][i] * solution_vector[i]
 
         print(f"Comprobación: {comprobation}")
+
+        return comprobation
+
+    def create_identity_matrix(self, matrix=None):
+        """Creates identity matrix
+        
+        @param matrix: a matrix object
+        @return identity matrix as a Matrix Object
+        """
+        if matrix and type(matrix) is not Matrix:
+            raise TypeError((
+                "La matriz recibida no es un objeto del tipo matriz "
+                f"es del tipo {type(matrix)}"
+            ))
+
+        local_matrix = matrix.matrix if matrix else self.matrix
+        identity_matrix = [[]]
+        for i in range(len(local_matrix)):
+            identity_matrix.append([])
+            for _ in range(len(local_matrix[i])):
+                identity_matrix[i].append(0)
+
+        identity_matrix.remove([])
+
+        for i in range(len(local_matrix)):
+            for _ in range(len(local_matrix)):
+                identity_matrix[i][i] = 1
+
+        return Matrix(identity_matrix)
+
+    def merge_sort(self, list_to_sort):
+        """merge sort method
+
+        @param arr: the list that'll be sort
+        @returns an ordered list
+        """
+        arr = list_to_sort[:]
+        if len(arr) > 1:
+            mid = len(arr) // 2
+
+            L = arr[:mid]
+            R = arr[mid:]
+
+            self.merge_sort(L)
+            self.merge_sort(R)
+
+            i = j = k = 0
+            while i < len(L) and j < len(R):
+                if L[i][1] < R[j][1]:
+                    arr[k] = L[i]
+                    i += 1
+                else:
+                    arr[k] = R[j]
+                    j += 1
+                k += 1
+            while i < len(L):
+                arr[k] = L[i]
+                i += 1
+                k += 1
+
+            while j < len(R):
+                arr[k] = R[j]
+                j += 1
+                k += 1
+
+        return arr
+
+    def sort_matrix(self, original_matrix):
+        """sort the matrix
+        
+        @param original_matrix: A Matrix object
+        @returns matrix sorted as a Matrix object
+        """
+        matrix = Matrix(self.matrix)
+        if type(original_matrix) is not Matrix:
+            raise TypeError((
+                "La matriz recibida no es un objeto del tipo matriz "
+                f"es del tipo {type(original_matrix)}"
+            ))
+
+        print("matrix antes de ser ordenada")
+        matrix.print_matrix()
+        result_matrix = matrix.multiply_matrix(original_matrix.matrix)
+        identity_matrix = self.create_identity_matrix()
+
+        if result_matrix.matrix == identity_matrix.matrix:
+            return matrix
+
+        (indexes, count) = ([], 0)
+        for i in range(len(result_matrix.matrix)):
+            count = 0
+            for element in range(len(result_matrix.matrix[i])):
+                if element == 0:
+                    count += 1
+                else:
+                    break
+            indexes.append(count)
+
+        list_to_sort = [element for element in enumerate(indexes)]
+        ordered_list = self.merge_sort(list_to_sort)
+
+        matrix_sorted = []
+        for index, _ in ordered_list:
+            matrix_sorted.append(matrix.matrix[index])
+
+        matrix_sorted = Matrix(matrix_sorted)
+        print("Esta es la matriz ordenada")
+        matrix_sorted.print_matrix()
+
+        return matrix_sorted
